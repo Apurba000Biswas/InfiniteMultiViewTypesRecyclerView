@@ -6,14 +6,28 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_data_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="visible"
         android:background="@color/colorRecyclerViewBack"
         android:drawSelectorOnTop="true"
         android:scrollbars="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
+    <include
+        android:id="@+id/loading_indicator"
+        layout="@layout/loading_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/rv_data_list"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/rv_data_list" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
