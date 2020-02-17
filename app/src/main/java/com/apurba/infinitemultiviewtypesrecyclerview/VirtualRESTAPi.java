@@ -10,7 +10,7 @@ import java.util.List;
 public class VirtualRESTAPi {
 
     private static final int MAX_THRESHOLD = 20;
-    private static final int DATABASE_SIZE = 100;
+    private static final int DATABASE_SIZE = 150;
 
     private static List<DataItem> getDataBase(){
         List<DataItem> dataItems = new ArrayList<>();

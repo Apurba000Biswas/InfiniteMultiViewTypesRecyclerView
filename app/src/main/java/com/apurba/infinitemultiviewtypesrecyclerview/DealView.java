@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import org.jetbrains.annotations.NotNull;
 
 import androidx.annotation.Nullable;
 
@@ -44,7 +43,6 @@ public class DealView extends LinearLayout {
             this.content = content;
         }
 
-        @NotNull
         @Override
         public String getId() {
             return this.id;

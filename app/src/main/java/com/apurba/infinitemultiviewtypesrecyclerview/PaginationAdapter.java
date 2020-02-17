@@ -1,8 +1,11 @@
 package com.apurba.infinitemultiviewtypesrecyclerview;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.Interpolator;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -19,6 +22,7 @@ public class PaginationAdapter extends RecyclerView.Adapter < RecyclerView.ViewH
 
     private List<DataItem> dataSet;
     private boolean isLoadingAdded;
+    private boolean isAnimate;
 
     public PaginationAdapter(){
         dataSet = new ArrayList<>();
@@ -28,6 +32,7 @@ public class PaginationAdapter extends RecyclerView.Adapter < RecyclerView.ViewH
 
     public void addAll(List<DataItem> dataSet){
         this.dataSet.addAll(dataSet);
+        isAnimate = false;
         notifyDataSetChanged();
     }
 
@@ -46,15 +51,21 @@ public class PaginationAdapter extends RecyclerView.Adapter < RecyclerView.ViewH
         notifyDataSetChanged();
     }
 
+    public void setAnimationTrue(){
+        isAnimate = true;
+    }
+
 
     public void removeLoadingFooter() {
         isLoadingAdded = false;
 
         int position = dataSet.size() - 1;
-        DataItem item = dataSet.get(position);
-        if (item != null) {
-            dataSet.remove(position);
-            notifyItemRemoved(position);
+        if (position>=0){
+            DataItem item = dataSet.get(position);
+            if (item != null) {
+                dataSet.remove(position);
+                notifyItemRemoved(position);
+            }
         }
     }
 
@@ -89,15 +100,37 @@ public class PaginationAdapter extends RecyclerView.Adapter < RecyclerView.ViewH
 
     class DataItemViewHolder extends RecyclerView.ViewHolder{
         private TextView tvName;
+        private Context context;
+        private View root;
 
         DataItemViewHolder(@NonNull View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.tv_name);
+            context = itemView.getContext();
+            root = itemView.findViewById(R.id.item_holder);
         }
 
         void bindView(DataItem dataItem){
             String name = dataItem.getName() + " " + dataItem.getId();
             tvName.setText(name);
+            if (isAnimate)animateView();
+        }
+
+        private void animateView(){
+            float offset =  context.getResources().getDimensionPixelSize(R.dimen.offset_y);
+            Interpolator interpolator =
+                    AnimationUtils.loadInterpolator(context, android.R.interpolator.fast_out_slow_in);
+
+            root.setVisibility(View.VISIBLE);
+            root.setTranslationY(offset);
+            root.setAlpha(0.85f);
+            // then animate back to natural position
+            root.animate()
+                    .translationY(0f)
+                    .alpha(1f)
+                    .setInterpolator(interpolator)
+                    .setDuration(600)
+                    .start();
         }
     }
 

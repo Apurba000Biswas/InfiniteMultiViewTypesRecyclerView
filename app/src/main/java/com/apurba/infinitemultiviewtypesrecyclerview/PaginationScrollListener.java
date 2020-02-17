@@ -16,6 +16,8 @@ public abstract class PaginationScrollListener extends RecyclerView.OnScrollList
     public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
 
+
+        scrolled();
         int visibleItemCount = layoutManager.getChildCount();
         int totalItemCount = layoutManager.getItemCount();
         int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
@@ -29,7 +31,7 @@ public abstract class PaginationScrollListener extends RecyclerView.OnScrollList
     }
 
     protected abstract void loadMoreItems();
-    public abstract int getTotalPageCount();
     public abstract boolean isLastPage();
     public abstract boolean isLoading();
+    public abstract void scrolled();
 }
