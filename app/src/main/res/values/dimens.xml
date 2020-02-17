@@ -5,5 +5,5 @@
     
     <dimen name="init_scroll_up_distance">200dp</dimen>
 
-    <dimen name="offset_y">200dp</dimen>
+    <dimen name="offset_y">100dp</dimen>
 </resources>

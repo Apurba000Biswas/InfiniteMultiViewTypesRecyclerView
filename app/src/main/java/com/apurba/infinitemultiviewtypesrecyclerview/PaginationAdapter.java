@@ -1,6 +1,7 @@
 package com.apurba.infinitemultiviewtypesrecyclerview;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,14 +20,19 @@ public class PaginationAdapter extends RecyclerView.Adapter < RecyclerView.ViewH
 
     private static final int LOADING_VIEW_TYPE = 1;
     private static final int ITEM_VIEW_TYPE = 0;
+    private static final int HEADER_SEARCH_VIEW_TYPE = 2;
+    private static final int CATEGORY_VIEW_TYPE = 3;
 
     private List<DataItem> dataSet;
     private boolean isLoadingAdded;
     private boolean isAnimate;
 
-    public PaginationAdapter(){
+    private Context mContext;
+
+    public PaginationAdapter(Context context){
         dataSet = new ArrayList<>();
         isLoadingAdded = false;
+        mContext = context;
     }
 
 
@@ -71,7 +77,15 @@ public class PaginationAdapter extends RecyclerView.Adapter < RecyclerView.ViewH
 
     @Override
     public int getItemViewType(int position) {
-        return (position == dataSet.size() - 1 && isLoadingAdded) ? LOADING_VIEW_TYPE : ITEM_VIEW_TYPE;
+        if (position == 0){
+            return HEADER_SEARCH_VIEW_TYPE;
+        }else if((position == dataSet.size()+1 && isLoadingAdded)){
+            return LOADING_VIEW_TYPE;
+        }else if(position == 1){
+            return CATEGORY_VIEW_TYPE;
+        } else{
+            return ITEM_VIEW_TYPE;
+        }
     }
 
     @NonNull
@@ -81,57 +95,77 @@ public class PaginationAdapter extends RecyclerView.Adapter < RecyclerView.ViewH
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.data_item, parent, false);
             return new DataItemViewHolder(view);
-        }else{
+        }else if (viewType == LOADING_VIEW_TYPE){
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.loading_view, parent, false);
             return new LoadingViewHolder(view);
+        }else if (viewType == HEADER_SEARCH_VIEW_TYPE){
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.search_view, parent, false);
+            return new SearchViewHolder(view);
+        }else{
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.category_view, parent, false);
+            return new CategoryViewHolder(view);
         }
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         int viewType = getItemViewType(position);
+        Log.d("Adapter", "Position : " + position);
         if (viewType == ITEM_VIEW_TYPE){
             DataItemViewHolder viewHolder = (DataItemViewHolder) holder;
-            viewHolder.bindView(dataSet.get(position));
+            viewHolder.bindView(dataSet.get(position-2));
+        }else if (viewType == HEADER_SEARCH_VIEW_TYPE){
+            SearchViewHolder viewHolder = (SearchViewHolder) holder;
+            viewHolder.bindView();
+        }else if (viewType == CATEGORY_VIEW_TYPE){
+            CategoryViewHolder viewHolder = (CategoryViewHolder) holder;
+            viewHolder.bindView();
         }
+    }
+
+    @Override
+    public int getItemCount() {
+        return dataSet == null ? 0 : dataSet.size()+2;
     }
 
 
     class DataItemViewHolder extends RecyclerView.ViewHolder{
         private TextView tvName;
-        private Context context;
         private View root;
 
         DataItemViewHolder(@NonNull View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.tv_name);
-            context = itemView.getContext();
             root = itemView.findViewById(R.id.item_holder);
         }
 
         void bindView(DataItem dataItem){
             String name = dataItem.getName() + " " + dataItem.getId();
             tvName.setText(name);
-            if (isAnimate)animateView();
+            if (isAnimate)animateView(root);
         }
 
-        private void animateView(){
-            float offset =  context.getResources().getDimensionPixelSize(R.dimen.offset_y);
-            Interpolator interpolator =
-                    AnimationUtils.loadInterpolator(context, android.R.interpolator.fast_out_slow_in);
 
-            root.setVisibility(View.VISIBLE);
-            root.setTranslationY(offset);
-            root.setAlpha(0.85f);
-            // then animate back to natural position
-            root.animate()
-                    .translationY(0f)
-                    .alpha(1f)
-                    .setInterpolator(interpolator)
-                    .setDuration(600)
-                    .start();
-        }
+    }
+
+    private void animateView(View root){
+        float offset =  mContext.getResources().getDimensionPixelSize(R.dimen.offset_y);
+        Interpolator interpolator =
+                AnimationUtils.loadInterpolator(mContext, android.R.interpolator.fast_out_slow_in);
+
+        root.setVisibility(View.VISIBLE);
+        root.setTranslationY(offset);
+        root.setAlpha(0.85f);
+        // then animate back to natural position
+        root.animate()
+                .translationY(0f)
+                .alpha(1f)
+                .setInterpolator(interpolator)
+                .setDuration(600)
+                .start();
     }
 
     class LoadingViewHolder extends RecyclerView.ViewHolder{
@@ -143,8 +177,30 @@ public class PaginationAdapter extends RecyclerView.Adapter < RecyclerView.ViewH
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return dataSet == null ? 0 : dataSet.size();
+    class SearchViewHolder extends RecyclerView.ViewHolder{
+        private View searchHolder;
+        public SearchViewHolder(@NonNull View itemView) {
+            super(itemView);
+            searchHolder = itemView.findViewById(R.id.search_holder);
+        }
+        void bindView(){
+            if (isAnimate)animateView(searchHolder);
+        }
     }
+
+    class CategoryViewHolder extends RecyclerView.ViewHolder{
+
+        View root;
+
+        public CategoryViewHolder(@NonNull View itemView) {
+            super(itemView);
+            root = itemView.findViewById(R.id.cat_holder);
+        }
+
+        void bindView(){
+            if (isAnimate) animateView(root);
+        }
+    }
+
+
 }

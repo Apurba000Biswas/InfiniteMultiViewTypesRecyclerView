@@ -42,7 +42,7 @@ public class MainActivity extends BaseActivity implements VirtualRESTAPi.Virtual
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        adapter = new PaginationAdapter();
+        adapter = new PaginationAdapter(this);
         recyclerView.setAdapter(adapter);
 
         recyclerView.addOnScrollListener( new PaginationScrollListener(linearLayoutManager) {
@@ -96,9 +96,11 @@ public class MainActivity extends BaseActivity implements VirtualRESTAPi.Virtual
         isLoading = false;
         adapter.removeLoadingFooter();
         if (pageData == null){
+            adapter.notifyDataSetChanged();
             isLastPage = true;
             return;
         }
+        //adapter.removeLoadingFooter();
         adapter.addAll(pageData);
     }
 }
