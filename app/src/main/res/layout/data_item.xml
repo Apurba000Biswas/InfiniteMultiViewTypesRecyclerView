@@ -3,15 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:id="@+id/item_holder"
+    android:layout_margin="10dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
-        android:padding="16dp"
-        android:textColor="@android:color/black"
-        android:textSize="20sp"
-        android:id="@+id/tv_name"
+    <ImageView
+        android:id="@+id/iv_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="TextView" />
+        android:scaleType="centerCrop"
+        android:layout_height="180dp"/>
 </LinearLayout>

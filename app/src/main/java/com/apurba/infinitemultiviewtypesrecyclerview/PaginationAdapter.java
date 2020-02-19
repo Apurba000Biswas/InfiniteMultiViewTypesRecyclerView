@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -15,6 +16,8 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Picasso;
 
 public class PaginationAdapter extends RecyclerView.Adapter < RecyclerView.ViewHolder > {
 
@@ -133,18 +136,19 @@ public class PaginationAdapter extends RecyclerView.Adapter < RecyclerView.ViewH
 
 
     class DataItemViewHolder extends RecyclerView.ViewHolder{
-        private TextView tvName;
+        private ImageView imageView;
         private View root;
 
         DataItemViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvName = itemView.findViewById(R.id.tv_name);
+            imageView = itemView.findViewById(R.id.iv_image);
             root = itemView.findViewById(R.id.item_holder);
         }
 
         void bindView(DataItem dataItem){
-            String name = dataItem.getName() + " " + dataItem.getId();
-            tvName.setText(name);
+            Picasso.get()
+                    .load(dataItem.getName())
+                    .into(imageView);
             if (isAnimate)animateView(root);
         }
 

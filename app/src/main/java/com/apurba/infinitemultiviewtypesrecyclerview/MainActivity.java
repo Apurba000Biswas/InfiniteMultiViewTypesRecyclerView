@@ -9,11 +9,13 @@ import android.view.View;
 
 import java.util.List;
 
-public class MainActivity extends BaseActivity implements VirtualRESTAPi.VirtualApiResponseListener{
+public class MainActivity extends BaseActivity implements RESTController.TheCatApiResponseListener{
 
     private PaginationAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
     private View progressBar;
+
+
 
     private static final int PAGE_START = 0;
 
@@ -73,13 +75,15 @@ public class MainActivity extends BaseActivity implements VirtualRESTAPi.Virtual
     }
 
     private void loadFirstPage() {
-        VirtualRESTAPi.getNextData(PAGE_START, this);
+        RESTController.makeCatImageRequest(20, this);
+        //VirtualRESTAPi.getNextData(PAGE_START, this);
         progressBar.setVisibility(View.VISIBLE);
         isLoading = true;
     }
 
     private void loadNextPage() {
-        VirtualRESTAPi.getNextData(adapter.getLastId()+1, this);
+        RESTController.makeCatImageRequest(20, this);
+        //VirtualRESTAPi.getNextData(adapter.getLastId()+1, this);
         adapter.addLoadingFooter();
         isLoading = true;
     }
