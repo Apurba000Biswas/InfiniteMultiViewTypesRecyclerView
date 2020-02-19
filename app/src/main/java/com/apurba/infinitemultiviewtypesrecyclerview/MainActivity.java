@@ -1,5 +1,6 @@
 package com.apurba.infinitemultiviewtypesrecyclerview;
 
+import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -66,6 +67,7 @@ public class MainActivity extends BaseActivity implements VirtualRESTAPi.Virtual
                 adapter.setAnimationTrue();
             }
         });
+
 
         loadFirstPage();
     }
