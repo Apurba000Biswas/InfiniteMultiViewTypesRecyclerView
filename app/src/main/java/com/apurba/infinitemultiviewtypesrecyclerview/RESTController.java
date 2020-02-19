@@ -3,6 +3,8 @@ package com.apurba.infinitemultiviewtypesrecyclerview;
 import android.util.Log;
 import android.widget.GridLayout;
 
+import androidx.lifecycle.MutableLiveData;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -53,6 +55,35 @@ public class RESTController {
         CatRESTApi catsAPi = getCatRESTApi();
         Call<String> catsCall = catsAPi.catImageUrl(num);
         processCatsUrlResult(catsCall, listener);
+    }
+
+    static void getMutableLiveData(final MutableLiveData<List<DataItem>> mutableLiveData, int num){
+
+        CatRESTApi catsAPi = getCatRESTApi();
+        Call<String> catsCall = catsAPi.catImageUrl(20);
+        catsCall.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                String result = response.body().toString();
+                try{
+                    JSONArray jsArray = new JSONArray(result);
+                    List<DataItem> dataItems = new ArrayList<>();
+                    for (int i=0; i<jsArray.length(); i++){
+                        String imgUrl = jsArray.getJSONObject(i).getString("url");
+                        dataItems.add(new DataItem(imgUrl, i));
+                    }
+                    mutableLiveData.setValue(dataItems);
+
+                } catch (JSONException jsEx){
+                    Log.v(LOG_TAG,  "Parsing JSON" + jsEx.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.d(LOG_TAG, "OnFailure : " + t.getMessage());
+            }
+        });
     }
 
     private static void processCatsUrlResult(Call<String> catsCall, final TheCatApiResponseListener listener){

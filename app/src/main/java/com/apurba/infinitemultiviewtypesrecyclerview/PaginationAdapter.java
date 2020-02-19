@@ -57,6 +57,7 @@ public class PaginationAdapter extends RecyclerView.Adapter < RecyclerView.ViewH
     public void addLoadingFooter() {
         isLoadingAdded = true;
         dataSet.add(new DataItem("", -1));
+        //notifyItemInserted(dataSet.size()-1);
         notifyDataSetChanged();
     }
 
@@ -146,9 +147,12 @@ public class PaginationAdapter extends RecyclerView.Adapter < RecyclerView.ViewH
         }
 
         void bindView(DataItem dataItem){
-            Picasso.get()
-                    .load(dataItem.getName())
-                    .into(imageView);
+            if (dataItem.getName() != null && !dataItem.getName().isEmpty()){
+                Picasso.get()
+                        .load(dataItem.getName())
+                        .into(imageView);
+            }
+
             if (isAnimate)animateView(root);
         }
 

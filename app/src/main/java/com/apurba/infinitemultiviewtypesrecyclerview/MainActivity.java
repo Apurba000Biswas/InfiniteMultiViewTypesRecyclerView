@@ -1,6 +1,8 @@
 package com.apurba.infinitemultiviewtypesrecyclerview;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +24,8 @@ public class MainActivity extends BaseActivity implements RESTController.TheCatA
     private boolean isLoading = false;
     private boolean isLastPage = false;
 
+    private MainViewModel mainViewModel;
+
 
 
     @Override
@@ -30,6 +34,8 @@ public class MainActivity extends BaseActivity implements RESTController.TheCatA
         setContentView(R.layout.activity_main);
 
         setNotificationBarBlackNWhite();
+
+        mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
 
         progressBar = findViewById(R.id.loading_indicator);
         setRecyclerView();
@@ -70,23 +76,38 @@ public class MainActivity extends BaseActivity implements RESTController.TheCatA
             }
         });
 
-
         loadFirstPage();
+        mainViewModel.getCats().observe(this, new Observer<List<DataItem>>() {
+            @Override
+            public void onChanged(List<DataItem> dataItems) {
+                if (dataItems != null && !dataItems.isEmpty()){
+                    adapter.addAll(dataItems);
+                    adapter.removeLoadingFooter();
+                    progressBar.setVisibility(View.GONE);
+                    isLoading = false;
+                }
+
+            }
+        });
     }
 
     private void loadFirstPage() {
-        RESTController.makeCatImageRequest(20, this);
+        //RESTController.makeCatImageRequest(20, this);
         //VirtualRESTAPi.getNextData(PAGE_START, this);
+        //mainViewModel.loadNext(4);
         progressBar.setVisibility(View.VISIBLE);
         isLoading = true;
     }
 
     private void loadNextPage() {
-        RESTController.makeCatImageRequest(20, this);
+        //RESTController.makeCatImageRequest(20, this);
         //VirtualRESTAPi.getNextData(adapter.getLastId()+1, this);
         adapter.addLoadingFooter();
+        mainViewModel.loadNext(4);
+
         isLoading = true;
     }
+
 
 
     private void setDealView(){
